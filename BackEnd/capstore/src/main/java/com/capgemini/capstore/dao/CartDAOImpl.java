@@ -20,26 +20,34 @@ public class CartDAOImpl implements CartDAO {
 
 	@PersistenceUnit
 	private EntityManagerFactory entityManagerFactory;
-	
+
 	@Override
-	public boolean addToCart(String email, int productId) {
-		
+	public boolean addToCart(String email, ProductBean productBean, int productQuantity) {
+
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		EntityTransaction entityTransaction = entityManager.getTransaction();
 
 		String userEmailQuery = "from LoginBean where email = :email";
 		Query query = entityManager.createQuery(userEmailQuery);
 		query.setParameter("email", email);
-		
+
 		String productIdQuery = "from ProductBean where productId = :productId";
 		Query query1 = entityManager.createQuery(productIdQuery);
-		query1.setParameter("productId", productId);
-		
+		query1.setParameter("productId", productBean.getProductId());
+
 		boolean isproductAdded = false;
 		CartBean cartBean = new CartBean();
 		cartBean.setEmail(email);
-		cartBean.setProductId(productId);
-		
+		cartBean.setProductId(productBean.getProductId());
+		cartBean.setProductName(productBean.getProductName());
+		cartBean.setProductImage(productBean.getProductImage());
+		cartBean.setProductPrice(productBean.getProductPrice());
+		cartBean.setBrandName(productBean.getProductBrandName());
+		cartBean.setProductCategory(productBean.getProductCategory());
+		cartBean.setProductDiscount(productBean.getProductDiscount());
+		cartBean.setProductDiscountExpireDate(productBean.getProductDiscountExpiryDate());
+		cartBean.setPurchaseQuantity(productQuantity);
+
 		try {
 			entityTransaction.begin();
 			entityManager.persist(cartBean);
@@ -54,11 +62,38 @@ public class CartDAOImpl implements CartDAO {
 	}
 
 	@Override
+	public List<CartBean> displayCart(String email) {
+		int productId = 0;
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		List<CartBean> cartlist = null;
+
+		String userEmailQuery = "from LoginBean where email = :email";
+		Query query = entityManager.createQuery(userEmailQuery);
+		query.setParameter("email", email);
+
+		String productIdQuery = "from ProductBean where productId = :productId";
+		Query query1 = entityManager.createQuery(productIdQuery);
+		query1.setParameter("productId", productId);
+
+		try {
+			String jpql = "FROM CartBean WHERE email =: email";
+			Query query2 = entityManager.createQuery(jpql);
+			query2.setParameter("email", email);
+			cartlist = query2.getResultList();
+			entityManager.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return cartlist;
+	}
+
+	@Override
 	public boolean removeFromCart(String email, int productId) {
 		boolean isproductRemoved = false;
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		EntityTransaction entityTransaction = entityManager.getTransaction();
-		
+
 		String productIdQuery = "from CartBean where email = :email AND productId = :productId";
 		Query query1 = entityManager.createQuery(productIdQuery);
 		query1.setParameter("productId", productId);
@@ -76,80 +111,5 @@ public class CartDAOImpl implements CartDAO {
 		}
 		entityManager.close();
 		return isproductRemoved;
-	}
-
-	@Override
-	public List<CartBean> displayCart(String email) {
-		int productId=0;
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		List<CartBean> cartlist = null;
-		
-		String userEmailQuery = "from LoginBean where email = :email";
-		Query query = entityManager.createQuery(userEmailQuery);
-		query.setParameter("email", email);
-		
-		String productIdQuery = "from ProductBean where productId = :productId";
-		Query query1 = entityManager.createQuery(productIdQuery);
-		query1.setParameter("productId", productId);
-		
-		try {
-			String jpql = "FROM CartBean WHERE email =: email";
-			Query query2 = entityManager.createQuery(jpql);
-			query2.setParameter("email", email);
-			cartlist = query2.getResultList();
-			entityManager.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return cartlist;
-}
-
-	@Override
-	public List<ProductBean> displayCartProduct(String email) {
-		int productId = 0;
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		List<CartBean> cartlist = null;
-		List<ProductBean> cartProductlist = null;
-
-		
-		try {
-			String jpql = "FROM CartBean WHERE email =: email";
-			Query query2 = entityManager.createQuery(jpql);
-			query2.setParameter("email", email);
-			cartlist = query2.getResultList();
-			for (CartBean bean : cartlist) {
-				System.err.println(bean.getProductId());
-				productId =bean.getProductId();
-				cartProductlist= cartlist(productId);
-				
-			}
-//			for (CartBean cartBean : cartlist) {
-//				String jpql1= "FROM ProductBean WHERE productId =: productId";
-//				Query query3=entityManager.createQuery(jpql1);
-//				query3.setParameter("productId", cartBean.getProductId());
-//				cartProductlist = query3.getResultList();
-//			}
-			
-			entityManager.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return cartProductlist;
-}
-
-	@Override
-	public List<ProductBean> cartlist(int productId) {
-
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-
-		List<ProductBean> cartProductlist = null;
-
-		String jpql1= "FROM ProductBean WHERE productId =: productId";
-		Query query3=entityManager.createQuery(jpql1);
-		query3.setParameter("productId", productId);
-		cartProductlist = query3.getResultList();
-		return cartProductlist;
 	}
 }

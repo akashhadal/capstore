@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.capgemini.capstore.bean.ProductBean;
 import com.capgemini.capstore.bean.WishlistBean;
 import com.capgemini.capstore.dao.WishlistDAO;
 
@@ -15,8 +16,8 @@ public class WishlistServiceImpl implements WishlistService{
 	private WishlistDAO wishlistDAO;
 	
 	@Override
-	public boolean addToWishlist(String email, int productId) {
-		return wishlistDAO.addToWishlist(email, productId);
+	public boolean addToWishlist(String email, ProductBean productBean) {
+		return wishlistDAO.addToWishlist(email, productBean);
 	}
 
 	@Override

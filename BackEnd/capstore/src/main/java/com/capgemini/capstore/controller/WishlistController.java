@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capgemini.capstore.bean.ProductBean;
 import com.capgemini.capstore.bean.WishlistBean;
 import com.capgemini.capstore.response.CapStoreResponse;
 import com.capgemini.capstore.service.WishlistService;
@@ -24,8 +25,8 @@ public class WishlistController {
 	private WishlistService wishlistService;
 	
 	@PostMapping(path = "/addToWishlist")
-	public CapStoreResponse addToWishlist(@RequestParam String email, @RequestParam int productId) {
-		boolean isAdded = wishlistService.addToWishlist(email, productId);
+	public CapStoreResponse addToWishlist(@RequestParam String email, @RequestBody ProductBean productBean) {
+		boolean isAdded = wishlistService.addToWishlist(email, productBean);
 		CapStoreResponse capStoreResponse = new CapStoreResponse();
 		if (isAdded) {
 			capStoreResponse.setStatusCode(201);

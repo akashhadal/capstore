@@ -16,8 +16,8 @@ public class CartServiceImpl implements CartService {
 	private CartDAO cartDAO;
 	
 	@Override
-	public boolean addToCart(String email, int productId) {
-		return cartDAO.addToCart(email, productId);
+	public boolean addToCart(String email, ProductBean productBean, int productQuantity) {
+		return cartDAO.addToCart(email, productBean, productQuantity);
 	}
 
 	@Override
@@ -30,11 +30,5 @@ public class CartServiceImpl implements CartService {
 		return cartDAO.displayCart(email);
 	}
 
-	@Override
-	public List<ProductBean> displayCartProduct(String email) {
-		return cartDAO.displayCartProduct(email);
-	}
-	
-	
 
 }

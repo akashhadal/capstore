@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
+import com.capgemini.capstore.bean.ProductBean;
 import com.capgemini.capstore.bean.WishlistBean;
 
 @Repository
@@ -20,7 +21,7 @@ public class WishlistDAOImpl implements WishlistDAO {
 	private EntityManagerFactory entityManagerFactory;
 
 	@Override
-	public boolean addToWishlist(String email, int productId) {
+	public boolean addToWishlist(String email, ProductBean productBean) {
 		
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		EntityTransaction entityTransaction = entityManager.getTransaction();
@@ -31,12 +32,19 @@ public class WishlistDAOImpl implements WishlistDAO {
 		
 		String productIdQuery = "from ProductBean where productId = :productId";
 		Query query1 = entityManager.createQuery(productIdQuery);
-		query1.setParameter("productId", productId);
+		query1.setParameter("productId", productBean.getProductId());
 		
 		boolean isproductAdded = false;
 		WishlistBean wishlistBean = new WishlistBean();
 		wishlistBean.setEmail(email);
-		wishlistBean.setProductId(productId);
+		wishlistBean.setProductId(productBean.getProductId());
+		wishlistBean.setProductName(productBean.getProductName());
+		wishlistBean.setProductImage(productBean.getProductImage());
+		wishlistBean.setProductPrice(productBean.getProductPrice());
+		wishlistBean.setBrandName(productBean.getProductBrandName());
+		wishlistBean.setProductCategory(productBean.getProductCategory());
+		wishlistBean.setProductDiscount(productBean.getProductDiscount());
+		wishlistBean.setProductDiscountExpireDate(productBean.getProductDiscountExpiryDate());
 		
 		try {
 			entityTransaction.begin();
@@ -82,14 +90,14 @@ public class WishlistDAOImpl implements WishlistDAO {
 		int productId = 0;
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		List<WishlistBean> wishlist = null;
-//		
-//		String userEmailQuery = "from LoginBean where email = :email";
-//		Query query = entityManager.createQuery(userEmailQuery);
-//		query.setParameter("email", email);
-//		
-//		String productIdQuery = "from ProductBean where productId = :productId";
-//		Query query1 = entityManager.createQuery(productIdQuery);
-//		query1.setParameter("productId", productId);
+		
+		String userEmailQuery = "from LoginBean where email = :email";
+		Query query = entityManager.createQuery(userEmailQuery);
+		query.setParameter("email", email);
+		
+		String productIdQuery = "from ProductBean where productId = :productId";
+		Query query1 = entityManager.createQuery(productIdQuery);
+		query1.setParameter("productId", productId);
 		
 		try {
 			String jpql = "FROM WishlistBean WHERE email =: email";

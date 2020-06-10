@@ -21,7 +21,7 @@ public class ProductBean {
 	@Column
 	private String productName;
 	@Column
-	private String productPrice;
+	private double productPrice;
 	@Column
 	private String productQuantity;
 	@Column
@@ -54,11 +54,13 @@ public class ProductBean {
 		this.productName = productName;
 	}
 
-	public String getProductPrice() {
+	
+
+	public double getProductPrice() {
 		return productPrice;
 	}
 
-	public void setProductPrice(String productPrice) {
+	public void setProductPrice(double productPrice) {
 		this.productPrice = productPrice;
 	}
 

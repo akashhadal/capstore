@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,8 +26,8 @@ public class CartController {
 	private CartService cartService;
 	
 	@PostMapping(path = "/addToCart")
-	public CapStoreResponse addToCart(@RequestParam String email, @RequestParam int productId) {
-		boolean isAdded = cartService.addToCart(email, productId);
+	public CapStoreResponse addToCart(@RequestParam String email, @RequestBody ProductBean productBean,@RequestParam int productQuantity) {
+		boolean isAdded = cartService.addToCart(email, productBean,productQuantity);
 		CapStoreResponse capStoreResponse = new CapStoreResponse();
 		if	 (isAdded) {
 			capStoreResponse.setStatusCode(201);
@@ -74,21 +75,5 @@ public class CartController {
 		return capStoreResponse;
 	}
 	
-	@GetMapping(path = "/displayCartProductlist")
-	public CapStoreResponse displayCartProductlist(@RequestParam String email) {
-		List<ProductBean> displayCartProductList = cartService.displayCartProduct(email);
-		CapStoreResponse capStoreResponse = new CapStoreResponse();
-		if (displayCartProductList != null) {
-			capStoreResponse.setStatusCode(201);
-			capStoreResponse.setMessage("Success");
-			capStoreResponse.setDisplayCartProductlist(displayCartProductList);
-			//capStoreResponse.setDisplayWishlist(displayWishlist);
-			capStoreResponse.setDescription("Cartlist displayed !");
-		} else {
-			capStoreResponse.setStatusCode(401);
-			capStoreResponse.setMessage("Failed");
-			capStoreResponse.setDescription("Unable to display Cartlist !");
-		}
-		return capStoreResponse;
-	}
+
 }
